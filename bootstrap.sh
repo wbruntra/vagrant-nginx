@@ -9,6 +9,7 @@ virtualenv /home/vagrant/venv
 source /home/vagrant/venv/bin/activate
 pip install flask
 pip install requests
+pip install pymysql
 
 # UWSGI Setup
 apt-get -y install uwsgi uwsgi-plugin-python
