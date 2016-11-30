@@ -32,10 +32,20 @@ ln -s /etc/nginx/sites-available/nginx_config /etc/nginx/sites-enabled
 service nginx restart
 service uwsgi restart
 
-#MySQL setup
-debconf-set-selections <<< "mysql-server mysql-server/root_password password rootpw"
-debconf-set-selections <<< "mysql-server mysql-server/root_password_again password rootpw"
+# Variables
+DBHOST=localhost
+DBNAME=mytestdb
+DBUSER=root
+DBPASSWD=test123
 
-apt-get install -y mysql-server-5.6
+# MySQL setup for development purposes ONLY
+echo -e "\n--- Install MySQL specific packages and settings ---\n"
+debconf-set-selections <<< "mysql-server mysql-server/root_password password $DBPASSWD"
+debconf-set-selections <<< "mysql-server mysql-server/root_password_again password $DBPASSWD"
 
-mysql_secure_installation
+apt-get -y install mysql-server >> /vagrant/vm_build.log 2>&1
+
+echo -e "\n--- Setting up our MySQL user and db ---\n"
+mysql -uroot -p$DBPASSWD -e "CREATE DATABASE $DBNAME" >> /vagrant/vm_build.log 2>&1
+mysql -uroot -p$DBPASSWD -e "grant all privileges on $DBNAME.* to '$DBUSER'@'localhost' identified by '$DBPASSWD'" > /vagrant/vm_build.log
+mysql -uroot -p$DBPASSWD < /vagrant/movie_db.sql
