@@ -6,7 +6,13 @@ import pymysql
 app = Flask(__name__)
 
 def query_db(param):
-    conn = pymysql.connect(host='localhost', port=3306, user='root', passwd='test123', db='treehouse_movie_db')
+    config = {'host':'localhost',
+            'port':3306,
+            'user':'root',
+            'passwd':'test123',
+            'db':'treehouse_movie_db'}
+
+    conn = pymysql.connect(**config)
 
     cur = conn.cursor(pymysql.cursors.DictCursor)
 
