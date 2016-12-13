@@ -1,0 +1,17 @@
+server {
+    listen 80;
+
+    server_name localhost;
+
+    access_log  /var/log/nginx/access.log;
+    error_log  /var/log/nginx/error.log;
+
+    location / {
+        try_files $uri @hello;
+    }
+
+    location @hello {
+        include uwsgi_params;
+        uwsgi_pass unix:/home/vagrant/hotsocks/movie.sock;
+   }
+}
